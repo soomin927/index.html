@@ -1,0 +1,210 @@
+<!DOCTYPE html> 
+<html lang="ko"> 
+
+<head> 
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Soomin First English Learning App</title> 
+
+    <style> 
+        body { 
+            font-family: Arial, sans-serif; 
+            text-align: center; 
+            margin: 50px auto; 
+            max-width: 600px;
+        } 
+
+        .quiz-container {
+            border: 2px solid lightgray;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        button { 
+            font-size: 20px; 
+            padding: 12px 24px; 
+            width: 80%;
+            background-color: lightblue; 
+            border: none;
+            border-radius: 8px;
+            cursor: pointer; 
+            transition: background-color 0.2s;
+        } 
+
+        button:hover {
+            background-color: #87ceeb;
+        }
+
+        #next-btn, #restart-btn {
+            background-color: lightgreen;
+            margin-top: 20px;
+            font-weight: bold;
+        }
+
+        #next-btn:hover, #restart-btn:hover {
+            background-color: #90ee90;
+        }
+
+        #feedback {
+            margin-top: 20px;
+            font-size: 22px;
+            min-height: 30px;
+        }
+
+        .progress {
+            color: gray;
+            font-size: 16px;
+        }
+    </style> 
+</head> 
+
+<body> 
+
+    <h1>Vocabulary Quiz</h1> 
+
+    <div class="quiz-container">
+        <div class="progress" id="progress">문제 1 / 5</div>
+        <h2 id="question">What does "break through" mean?</h2> 
+
+        <div class="options-container" id="options">
+            <!-- 보기 버튼들이 JavaScript에 의해 동적으로 생성됩니다 -->
+        </div> 
+
+        <h3 id="feedback"></h3> 
+        
+        <button id="next-btn" onclick="nextQuestion()" style="display: none;">다음 문제로</button>
+        <button id="restart-btn" onclick="restartQuiz()" style="display: none;">다시 풀기</button>
+    </div>
+
+    <script> 
+        // 5개의 어휘 학습 데이터 세트
+        const quizData = [
+            {
+                word: "break through",
+                options: ["overcome", "Avoid", "Watch"],
+                answer: "overcome",
+                korean: "돌파하다 / 극복하다"
+            },
+            {
+                word: "carry out",
+                options: ["Delay", "execute", "Forget"],
+                answer: "execute",
+                korean: "수행하다 / 실행하다"
+            },
+            {
+                word: "give up",
+                options: ["surrender", "Continue", "Start"],
+                answer: "surrender",
+                korean: "포기하다 / 항복하다"
+            },
+            {
+                word: "look forward to",
+                options: ["dislike", "anticipate", "Ignore"],
+                answer: "anticipate",
+                korean: "기대하다"
+            },
+            {
+                word: "put off",
+                options: ["postpone", "Finish", "Accelerate"],
+                answer: "postpone",
+                korean: "연기하다 / 미루다"
+            }
+        ];
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+
+        // 화면에 현재 문항 출력 함수
+        function loadQuiz() {
+            const currentQuiz = quizData[currentQuestionIndex];
+            
+            // 문제 및 진행 상황 업데이트
+            document.getElementById("progress").innerText = `문제 ${currentQuestionIndex + 1} / ${quizData.length}`;
+            document.getElementById("question").innerText = `What does "${currentQuiz.word}" mean?`;
+            document.getElementById("feedback").innerText = "";
+            document.getElementById("next-btn").style.display = "none";
+
+            // 보기 버튼 생성
+            const optionsContainer = document.getElementById("options");
+            optionsContainer.innerHTML = "";
+
+            currentQuiz.options.forEach(option => {
+                const button = document.createElement("button");
+                button.innerText = option;
+                button.onclick = () => checkAnswer(option);
+                optionsContainer.appendChild(button);
+            });
+        }
+
+        // 정답 확인 함수
+        function checkAnswer(selectedAnswer) {
+            const currentQuiz = quizData[currentQuestionIndex];
+            const feedbackEl = document.getElementById("feedback");
+            const optionButtons = document.querySelectorAll(".options-container button");
+
+            // 중복 클릭 방지 (버튼 비활성화)
+            optionButtons.forEach(btn => btn.disabled = true);
+
+            if (selectedAnswer === currentQuiz.answer) {
+                feedbackEl.innerText = "맞았어! 정답이야! 🎉";
+                feedbackEl.style.color = "green";
+                score++;
+            } else {
+                feedbackEl.innerText = `틀렸어! 정답은 ${currentQuiz.answer}이야.`;
+                feedbackEl.style.color = "red";
+            }
+
+            // 다음 문제 또는 결과 버튼 표시
+            if (currentQuestionIndex < quizData.length - 1) {
+                document.getElementById("next-btn").innerText = "다음 문제로";
+                document.getElementById("next-btn").style.display = "inline-block";
+            } else {
+                document.getElementById("next-btn").innerText = "결과 보기";
+                document.getElementById("next-btn").style.display = "inline-block";
+            }
+        }
+
+        // 다음 문제로 이동 함수
+        function nextQuestion() {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < quizData.length) {
+                loadQuiz();
+            } else {
+                showResults();
+            }
+        }
+
+        // 최종 결과 출력 함수
+        function showResults() {
+            document.getElementById("progress").innerText = "학습 완료!";
+            document.getElementById("question").innerText = `퀴즈 끝! 총 5문제 중 ${score}문제를 맞췄습니다.`;
+            document.getElementById("options").innerHTML = "";
+            document.getElementById("feedback").innerText = score === 5 ? "perfect! 모든 단어를 잘 외웠어요!" : "수고하셨습니다! 다시 도전해보세요.";
+            document.getElementById("feedback").style.color = "black";
+            document.getElementById("next-btn").style.display = "none";
+            document.getElementById("restart-btn").style.display = "inline-block";
+        }
+
+        // 퀴즈 재시작 함수
+        function restartQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            document.getElementById("restart-btn").style.display = "none";
+            loadQuiz();
+        }
+
+        // 첫 번째 문제 로드
+        loadQuiz();
+    </script> 
+
+</body> 
+</html>
