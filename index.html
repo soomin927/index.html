@@ -1,4 +1,3 @@
-%%html
 <!DOCTYPE html>
 <html>
 
@@ -13,10 +12,10 @@
         }
 
         button {
-            font-size: 35px;
-            padding: 25px;
-            margin: 10px;
-            background-color: lightpink;
+            font-size: 25px;
+            padding: 15px;
+            margin: 7px;
+            background-color: lightblue;
             cursor: pointer;
         }
     </style>
@@ -42,22 +41,21 @@
 
     <h3 id="feedback"></h3>
 
-
     <script>
 
-      function checkAnswer(answer) {
+        function checkAnswer(answer) {
 
-    if (answer === "overcome") {
-        document.getElementById("feedback").innerText =
-            "맞았어! 정답이야!";
-    }
+            if (answer === "overcome") {
+                document.getElementById("feedback").innerText =
+                    "맞았어! 정답이야!";
+            }
 
-    else {
-        document.getElementById("feedback").innerText =
-            "틀렸어! 정답은 overcome이야.";
-    }
+            else {
+                document.getElementById("feedback").innerText =
+                    "틀렸어! 정답은 overcome이야.";
+            }
 
-}
+        }
 
     </script>
 
